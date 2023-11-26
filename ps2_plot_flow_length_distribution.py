@@ -1,6 +1,6 @@
 import pandas as pd
 import matplotlib.pyplot as plt
-from geoip2.database import Reader
+import seaborn as sns
 
 def convert_to_byte(row):
     units = {'bytes': 1, 'kb': 1024, 'mb': 1024**2}
@@ -35,28 +35,24 @@ pd.set_option('display.max_columns', None)
 
 df = df.assign(**df.apply(convert_to_byte, axis=1))
 
-df['src_dst_pair'] = df['first_ip_interface'] + ' - ' + df['second_ip_interface']
-
-traffic_data = df.groupby('src_dst_pair')['total_bytes'].sum()
-flow_counts = df.groupby('src_dst_pair').size()
-
-sorted_traffic_data = traffic_data.sort_values(ascending=False)
-sorted_flow_counts = flow_counts.sort_values(ascending=False)
-
+# Plot flow length distribution (Histogram)
 plt.figure(figsize=(10, 6))
-plt.plot(sorted_traffic_data.values)
-plt.xlabel('Source-Destination Pairs')
-plt.ylabel('Total Data Volume (Bytes)')
-plt.title('Zipf Plot of Data Volume by Source-Destination Pairs')
+sns.histplot(df['total_frames'], kde=False)
+plt.title('Flow Length Distribution (Total Frames)')
+plt.xlabel('Flow Length (Frames)')
+plt.ylabel('Frequency')
 plt.yscale('log')
-plt.xscale('log')
 plt.show()
 
+# Plot the ECDF
 plt.figure(figsize=(10, 6))
-plt.plot(sorted_flow_counts.values)
-plt.xlabel('Source-Destination Pairs')
-plt.ylabel('Number of Flows')
-plt.title('Zipf Plot of Flows by Source-Destination Pairs')
-plt.yscale('log')
-plt.xscale('log')
+sns.ecdfplot(df['total_frames'])
+plt.title('Empirical Cumulative Distribution Function (ECDF) of Flow Length')
+plt.xlabel('Flow Length (Frames)')
+plt.ylabel('ECDF')
+plt.grid(True)  # Adding a grid for better readability
 plt.show()
+
+# Display key summary statistics
+print("Key Summary Statistics (Total Frames):")
+print(df['total_frames'].describe())

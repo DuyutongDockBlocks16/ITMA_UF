@@ -1,6 +1,6 @@
 import pandas as pd
 import matplotlib.pyplot as plt
-from geoip2.database import Reader
+from distfit import distfit
 
 def convert_to_byte(row):
     units = {'bytes': 1, 'kb': 1024, 'mb': 1024**2}
@@ -35,28 +35,15 @@ pd.set_option('display.max_columns', None)
 
 df = df.assign(**df.apply(convert_to_byte, axis=1))
 
-df['src_dst_pair'] = df['first_ip_interface'] + ' - ' + df['second_ip_interface']
+# Assuming df is your DataFrame and 'total_frames' is the column with flow lengths
+data = df['total_frames']
 
-traffic_data = df.groupby('src_dst_pair')['total_bytes'].sum()
-flow_counts = df.groupby('src_dst_pair').size()
+ # Create a distfit object and fit it
+dist = distfit()
+dist.fit_transform(data)
 
-sorted_traffic_data = traffic_data.sort_values(ascending=False)
-sorted_flow_counts = flow_counts.sort_values(ascending=False)
-
-plt.figure(figsize=(10, 6))
-plt.plot(sorted_traffic_data.values)
-plt.xlabel('Source-Destination Pairs')
-plt.ylabel('Total Data Volume (Bytes)')
-plt.title('Zipf Plot of Data Volume by Source-Destination Pairs')
-plt.yscale('log')
-plt.xscale('log')
-plt.show()
-
-plt.figure(figsize=(10, 6))
-plt.plot(sorted_flow_counts.values)
-plt.xlabel('Source-Destination Pairs')
-plt.ylabel('Number of Flows')
-plt.title('Zipf Plot of Flows by Source-Destination Pairs')
-plt.yscale('log')
-plt.xscale('log')
+# Print the summary to see the results
+print(dist.summary)
+# Plot the fitted distribution
+dist.plot()
 plt.show()

@@ -8,7 +8,6 @@ df = pd.read_csv(csv_file_path)
 
 plt.figure(figsize=(14, 7))
 
-plt.figure(figsize=(14, 7))
 
 plt.subplot(1, 2, 1)
 bin_width = 100
