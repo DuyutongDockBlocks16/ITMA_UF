@@ -23,7 +23,7 @@ def convert_to_byte(row):
         print(f"Error processing row {row}: {e}")
         raise ValueError("Invalid unit. Supported units are 'bytes', 'kb', 'mb.")
 
-df = pd.read_csv('files/part2.txt', sep='\s+', skiprows=5, header=None, skipfooter=1, engine='python')
+df = pd.read_csv('files/final_a.txt', sep='\s+', skiprows=5, header=None, skipfooter=1, engine='python')
 
 new_column_names = ["first_ip_interface", "arrow", "second_ip_interface", "ld_frames", "ld_bytes", "ld_bytes_unit",
                     "rd_frames", "rd_bytes", "rd_bytes_unit", "total_frames", "total_bytes", "total_bytes_unit",
@@ -56,3 +56,22 @@ plt.show()
 # Display key summary statistics
 print("Key Summary Statistics (Total Frames):")
 print(df['total_frames'].describe())
+
+# Set the figure size for better visibility
+plt.figure(figsize=(10, 6))
+
+# Plot the histogram with a limited x-axis range to zoom in on the first few bars
+# Let's assume we are interested in flows with less than 2000 frames
+# You can adjust the range (0, 2000) as needed for your specific dataset
+sns.histplot(df['total_frames'], binrange=(0, 2000), kde=False)
+
+# Set the title and labels for the plot
+plt.title('Flow Length Distribution (Total Frames)')
+plt.xlabel('Flow Length (Frames)')
+plt.ylabel('Frequency')
+
+# Set y-axis to logarithmic scale for better visibility of counts
+plt.yscale('log')
+
+# Display the plot
+plt.show()
