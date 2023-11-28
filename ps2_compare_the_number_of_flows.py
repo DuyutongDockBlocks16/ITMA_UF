@@ -2,7 +2,7 @@ from scapy.all import rdpcap, PacketList
 from datetime import datetime, timedelta
 
 # 读取 PCAP 文件
-packets = rdpcap('files/part2.pcap')
+packets = rdpcap('files/final_a.pcap')
 
 # 定义超时设置
 timeouts = [1, 10, 60, 120, 1800]  # 单位为秒

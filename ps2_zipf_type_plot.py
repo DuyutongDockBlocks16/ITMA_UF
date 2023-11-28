@@ -23,7 +23,7 @@ def convert_to_byte(row):
         print(f"Error processing row {row}: {e}")
         raise ValueError("Invalid unit. Supported units are 'bytes', 'kb', 'mb.")
 
-df = pd.read_csv('files/part2.txt', sep='\s+', skiprows=5, header=None, skipfooter=1, engine='python')
+df = pd.read_csv('files/final_a.txt', sep='\s+', skiprows=5, header=None, skipfooter=1, engine='python')
 
 new_column_names = ["first_ip_interface", "arrow", "second_ip_interface", "ld_frames", "ld_bytes", "ld_bytes_unit",
                     "rd_frames", "rd_bytes", "rd_bytes_unit", "total_frames", "total_bytes", "total_bytes_unit",
@@ -35,7 +35,7 @@ pd.set_option('display.max_columns', None)
 
 df = df.assign(**df.apply(convert_to_byte, axis=1))
 
-df['src_dst_pair'] = df['first_ip_interface'] + ' - ' + df['second_ip_interface']
+df['src_dst_pair'] = df['first_ip_interface'].str.split(':').str[0] + ' - ' + df['second_ip_interface'].str.split(':').str[0]
 
 traffic_data = df.groupby('src_dst_pair')['total_bytes'].sum()
 flow_counts = df.groupby('src_dst_pair').size()

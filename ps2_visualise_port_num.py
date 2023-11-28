@@ -24,7 +24,7 @@ def convert_to_byte(row):
         print(f"Error processing row {row}: {e}")
         raise ValueError("Invalid unit. Supported units are 'bytes', 'kb', 'mb.")
 
-df = pd.read_csv('files/part2.txt', sep='\s+', skiprows=5, header=None, skipfooter=1, engine='python')
+df = pd.read_csv('files/final_a.txt', sep='\s+', skiprows=5, header=None, skipfooter=1, engine='python')
 
 new_column_names = ["first_ip_interface", "arrow", "second_ip_interface", "ld_frames", "ld_bytes", "ld_bytes_unit",
                     "rd_frames", "rd_bytes", "rd_bytes_unit", "total_frames", "total_bytes", "total_bytes_unit",
@@ -38,10 +38,11 @@ df = df.assign(**df.apply(convert_to_byte, axis=1))
 
 df['port'] = df['second_ip_interface'].str.split(':').str[1].astype(str)
 
-port_flow_count = df.groupby('port').size()
+port_flow_count = df.groupby('port').size().reset_index(name='count')
+port_flow_count = port_flow_count.sort_values(by='count', ascending=False)
 
 plt.figure(figsize=(10, 6))
-bar_plot = plt.bar(port_flow_count.index, port_flow_count.values)
+bar_plot = plt.bar(port_flow_count['port'], port_flow_count['count'])
 
 for bar in bar_plot:
     yval = bar.get_height()
@@ -49,6 +50,6 @@ for bar in bar_plot:
 
 plt.xlabel('Port Number')
 plt.ylabel('Number of Flows')
-plt.title('Flow Count Distribution by Port Numbers')
+plt.title('Flow Count Distribution by Port Numbers (Descending)')
 plt.xticks(rotation=45)
 plt.show()

@@ -23,7 +23,7 @@ def convert_to_byte(row):
         print(f"Error processing row {row}: {e}")
         raise ValueError("Invalid unit. Supported units are 'bytes', 'kb', 'mb.")
 
-df = pd.read_csv('files/part2.txt', sep='\s+', skiprows=5, header=None, skipfooter=1, engine='python')
+df = pd.read_csv('files/final_a.txt', sep='\s+', skiprows=5, header=None, skipfooter=1, engine='python')
 
 new_column_names = ["first_ip_interface", "arrow", "second_ip_interface", "ld_frames", "ld_bytes", "ld_bytes_unit",
                     "rd_frames", "rd_bytes", "rd_bytes_unit", "total_frames", "total_bytes", "total_bytes_unit",
@@ -54,4 +54,9 @@ plt.xlabel('Country')
 plt.ylabel('Total Traffic (Bytes)')
 plt.title('Flow Distribution by Country')
 plt.xticks(rotation=45)
+
+# 添加数字标签
+for i, v in enumerate(country_traffic):
+    plt.text(i, v, str(v), ha='center', va='bottom', fontsize=8)
+
 plt.show()

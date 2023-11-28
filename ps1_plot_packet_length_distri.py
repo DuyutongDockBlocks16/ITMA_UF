@@ -2,12 +2,11 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
 
-csv_file_path = 'files/part1.csv'
+csv_file_path = 'files/final_a.csv'
 
 df = pd.read_csv(csv_file_path)
 
 plt.figure(figsize=(14, 7))
-
 
 plt.subplot(1, 2, 1)
 bin_width = 100
