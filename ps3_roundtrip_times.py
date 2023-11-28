@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 
 # 加载数据
-file_path = 'files/part3.csv'
+file_path = 'files/final_a_tcptrace.csv'
 df = pd.read_csv(file_path)
 
 # 查找相关的列
