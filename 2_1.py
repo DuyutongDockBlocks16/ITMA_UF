@@ -1,29 +1,34 @@
 import pandas as pd
 import matplotlib.pyplot as plt
+import glob
 
-# Path to the flow data file
-file_path = 'files/my_15-3-0500.t2'
+# 定义数据文件的目录
+directory_path = 'files/my_files/'
 
-# Column names for the data
+# 列名定义
 columns = ['src', 'dst', 'pro', 'ok', 'sport', 'dport', 'packets', 'bytes', 'flows', 'first', 'latest']
 
-# Read the data from the text file
-df = pd.read_csv(file_path, sep='\t', header=None, names=columns)
+# 使用 glob 来获取目录下的所有文件路径
+file_paths = glob.glob(directory_path + '*.t2')
 
-# Aggregate the data by 'dport' to get the counts and sort them in descending order
-dport_counts = df['dport'].value_counts().sort_values(ascending=False).head(20)
+# 读取所有文件并合并为一个 DataFrame
+df_list = [pd.read_csv(file, sep='\t', header=None, names=columns) for file in file_paths]
+df_combined = pd.concat(df_list, ignore_index=True)
 
-# Plot for 'dport'
+# 按 'dport' 聚合数据，获取计数并按降序排列
+dport_counts = df_combined['dport'].value_counts().sort_values(ascending=False).head(20)
+
+# 绘制条形图
 plt.figure(figsize=(12, 8))
 bars = plt.bar(dport_counts.index.astype(str), dport_counts.values, color='skyblue')
 
-# Add the text annotations on top of the bars
+# 在条形上方添加文本注释
 for bar in bars:
     yval = bar.get_height()
     plt.text(bar.get_x() + bar.get_width() / 2, yval, int(yval), ha='center', va='bottom')
 
-plt.title('Top 20 Flow Distribution by Destination Port (dport)')
+plt.title('Top 20 Flow Distribution by Destination Port (dport) Across All Files')
 plt.xlabel('Destination Port')
 plt.ylabel('Frequency')
-plt.xticks(rotation=45)  # Rotate the x labels for better readability
+plt.xticks(rotation=45)
 plt.show()
