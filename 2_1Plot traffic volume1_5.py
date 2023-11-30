@@ -23,7 +23,6 @@ df_combined.set_index('first', inplace=True)
 traffic_per_minute = df_combined.resample('T')['bytes'].sum()
 traffic_per_hour = df_combined.resample('H')['bytes'].sum()
 
-
 # 绘制流量随时间变化的图表 - 按分钟
 plt.figure(figsize=(12, 6))
 plt.plot(traffic_per_minute, label='Per Minute', color='blue')
